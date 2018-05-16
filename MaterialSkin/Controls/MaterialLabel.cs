@@ -11,14 +11,29 @@ namespace MaterialSkin.Controls
         public MaterialSkinManager SkinManager => MaterialSkinManager.Instance;
         [Browsable(false)]
         public MouseState MouseState { get; set; }
-        protected override void OnCreateControl()
+        public MaterialLabel() : base()
         {
-            base.OnCreateControl();
 
             ForeColor = SkinManager.GetPrimaryTextColor();
             Font = SkinManager.ROBOTO_REGULAR_11;
-
+        }
+        protected override void OnCreateControl()
+        {
+            base.OnCreateControl();
             BackColorChanged += (sender, args) => ForeColor = SkinManager.GetPrimaryTextColor();
+        }
+        
+        [Browsable(true)]
+        [Category("Material")]
+        [Description("Chenge the Font.Size Property")]
+        public float FontSize
+        {
+            get { return this.Font.Size; }
+            set
+            {
+                base.Font = SkinManager.SetRoboFontSize(value);
+                this.Refresh();
+            }
         }
     }
 }

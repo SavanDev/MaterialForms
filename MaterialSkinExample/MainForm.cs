@@ -82,5 +82,15 @@ namespace MaterialSkinExample
         {
 
         }
+
+        private void materialRaisedButton3_Click(object sender, EventArgs e)
+        {
+            materialSnackbar1.ShowSnackbar();
+        }
+
+        private void materialFloatingActionButton1_Click(object sender, EventArgs e)
+        {
+            
+        }
     }
 }
