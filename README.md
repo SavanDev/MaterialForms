@@ -26,6 +26,9 @@ ProgressBar | Yes | Yes | No | No
 FloatingActionButton | No | No | No | No
 Dialogs | No | No | No | No
 Switch | Yes | Yes | Yes | Yes
+Cards | Yes | Yes | Yes | No
+Snackbar | No | No | No | No
+Banner | No | No | No | No
 More... | No | No | No | No
 
 ---
@@ -102,16 +105,14 @@ If you love .NET and Material Design, you should definitely check out [Material 
 
 Project forked from [IgnaceMaes](https://github.com/IgnaceMaes/MaterialSkin).
 
-This project is no longer under active development. Though, contributions are still welcome and the community will likely still help if you open an issue.
-
 ---
 
 #### Contact
 
 If you wish to contact me for anything you can get in touch at:
 
-- Twitter: https://twitter.com/Ignace_Maes
-- Personal Website: http://ignacemaes.com
+- Twitter (Original Author): https://twitter.com/Ignace_Maes
+- Personal Website (Original Author): http://ignacemaes.com
 
 ---
 
@@ -136,3 +137,7 @@ If you wish to contact me for anything you can get in touch at:
 ![alt tag](http://i.imgur.com/07MrJZQ.png)
 
 *MaterialSkin using a custom color scheme.*
+
+![alt tag](https://i.imgur.com/pxG9Uaj.png)
+
+*MaterialSkin cards and switch.*

@@ -111,8 +111,11 @@ namespace MaterialSkin
         private static readonly Color BACKGROUND_LIGHT = Color.FromArgb(255, 255, 255, 255);
         private static Brush BACKGROUND_LIGHT_BRUSH = new SolidBrush(BACKGROUND_LIGHT);
 
-        private static readonly Color BACKGROUND_DARK = Color.FromArgb(255, 51, 51, 51);
+        private static readonly Color BACKGROUND_DARK = Color.FromArgb(255, 33, 33, 33);
         private static Brush BACKGROUND_DARK_BRUSH = new SolidBrush(BACKGROUND_DARK);
+
+        private static readonly Color BACKGROUND_GREY = Color.FromArgb(255, 66, 66, 66);
+        private static Brush BACKGROUND_GREY_BRUSH = new SolidBrush(BACKGROUND_GREY);
 
         //Application action bar
         public readonly Color ACTION_BAR_TEXT = Color.FromArgb(255, 255, 255, 255);
@@ -225,11 +228,24 @@ namespace MaterialSkin
             return Theme == Themes.LIGHT ? BACKGROUND_LIGHT : BACKGROUND_DARK;
         }
 
+        public Color GetDialogBackgroundColor()
+        {
+            return Theme == Themes.LIGHT ? BACKGROUND_LIGHT : BACKGROUND_GREY;
+        }
+
+        public Color GetBorderDialogColor()
+        {
+            return Theme == Themes.LIGHT ? ColorTranslator.FromHtml("#e3e5e7") : ColorTranslator.FromHtml("#1c1a18");
+        }
+
         //Roboto font
         public Font ROBOTO_MEDIUM_12;
         public Font ROBOTO_REGULAR_11;
+        public Font ROBOTO_REGULAR_9;
         public Font ROBOTO_MEDIUM_11;
         public Font ROBOTO_MEDIUM_10;
+        public Font ROBOTO_MEDIUM_9;
+        public Font ROBOTO_MEDIUM_15;
 
         //Other constants
         public int FORM_PADDING = 14;
@@ -242,7 +258,10 @@ namespace MaterialSkin
             ROBOTO_MEDIUM_12 = new Font(LoadFont(Resources.Roboto_Medium), 12f);
             ROBOTO_MEDIUM_10 = new Font(LoadFont(Resources.Roboto_Medium), 10f);
             ROBOTO_REGULAR_11 = new Font(LoadFont(Resources.Roboto_Regular), 11f);
+            ROBOTO_REGULAR_9 = new Font(LoadFont(Resources.Roboto_Regular), 9f);
             ROBOTO_MEDIUM_11 = new Font(LoadFont(Resources.Roboto_Medium), 11f);
+            ROBOTO_MEDIUM_9 = new Font(LoadFont(Resources.Roboto_Medium), 9f);
+            ROBOTO_MEDIUM_15 = new Font(LoadFont(Resources.Roboto_Medium), 15f);
             Theme = Themes.LIGHT;
             ColorScheme = new ColorScheme(Primary.BlueGrey800, Primary.BlueGrey900, Primary.BlueGrey500, Accent.LightBlue200, TextShade.WHITE);
         }

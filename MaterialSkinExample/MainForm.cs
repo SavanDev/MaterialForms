@@ -77,5 +77,10 @@ namespace MaterialSkinExample
         {
             materialProgressBar1.Value = Math.Max(materialProgressBar1.Value - 10, 0);
         }
+
+        private void materialSwitch1_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }
