@@ -25,7 +25,7 @@ ListView | Yes | Yes | No | No
 ProgressBar | Yes | Yes | No | No 
 FloatingActionButton | No | No | No | No
 Dialogs | No | No | No | No
-Switch | No | No | No | No
+Switch | Yes | Yes | Yes | Yes
 More... | No | No | No | No
 
 ---
@@ -99,6 +99,8 @@ If you love .NET and Material Design, you should definitely check out [Material 
 
 
 #### State of the project
+
+Project forked from [IgnaceMaes](https://github.com/IgnaceMaes/MaterialSkin).
 
 This project is no longer under active development. Though, contributions are still welcome and the community will likely still help if you open an issue.
 
