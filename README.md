@@ -27,7 +27,7 @@ FloatingActionButton | Yes | N/A | N/A | Yes
 Dialogs | No | No | No | No
 Switch | Yes | Yes | Yes | Yes
 Card | Yes | Yes | No | No
-Snackbar | No | No | No | No
+Snackbar | Yes | Yes | N/A | Yes
 Banner | No | No | No | No
 More... | No | No | No | No
 
