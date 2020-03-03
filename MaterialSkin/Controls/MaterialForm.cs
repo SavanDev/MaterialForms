@@ -136,16 +136,6 @@ namespace MaterialSkin.Controls
             }
         }
 
-        private StringAlignment _textAlign;
-
-        // Easier read in the properties window
-        public enum Align
-        {
-            Left = 0,
-            Center = 1,
-            Right = 2
-        }
-
         private enum ResizeDirection
         {
             BottomLeft,
@@ -187,7 +177,11 @@ namespace MaterialSkin.Controls
             DoubleBuffered = true;
             SetStyle(ControlStyles.OptimizedDoubleBuffer | ControlStyles.ResizeRedraw, true);
 
-            float scale = getDpi() / 96.0f; //DPI Ajust
+            float scale;
+            using (Graphics g = this.CreateGraphics())
+            {
+                scale = g.DpiY / 96.0f;
+            }
             ACTION_BAR_HEIGHT = (int)(40 * scale);
             STATUS_BAR_HEIGHT = (int)(24 * scale);
             STATUS_BAR_BUTTON_WIDTH = STATUS_BAR_HEIGHT;
@@ -195,17 +189,6 @@ namespace MaterialSkin.Controls
             // This enables the form to trigger the MouseMove event even when mouse is over another control
             Application.AddMessageFilter(new MouseMessageFilter());
             MouseMessageFilter.MouseMove += OnGlobalMouseMove;
-        }
-
-        protected float getDpi()
-        {
-            float dpiY;
-            Form tempForm = new Form();
-            Graphics graphics = tempForm.CreateGraphics();
-            dpiY = graphics.DpiY;
-            graphics.Dispose();
-            tempForm.Dispose();
-            return dpiY;
         }
 
         protected override void WndProc(ref Message m)
@@ -606,6 +589,15 @@ namespace MaterialSkin.Controls
             g.DrawString(Text, SkinManager.ROBOTO_MEDIUM_12, SkinManager.ColorScheme.TextBrush, new Rectangle(SkinManager.FORM_PADDING, STATUS_BAR_HEIGHT, Width - (SkinManager.FORM_PADDING * 2), ACTION_BAR_HEIGHT), new StringFormat { LineAlignment = StringAlignment.Center, Alignment = _textAlign });
         }
 
+        private StringAlignment _textAlign;
+        
+        // Easier read in the properties window
+        public enum Align
+        {
+            Left = 0,
+            Center = 1,
+            Right = 2
+        }
     }
 
     public class MouseMessageFilter : IMessageFilter
