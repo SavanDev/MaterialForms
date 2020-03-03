@@ -78,8 +78,6 @@ namespace MaterialSkinExample
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.item3ToolStripMenuItem = new MaterialSkin.Controls.MaterialToolStripMenuItem();
             this.materialFlatButton3 = new MaterialSkin.Controls.MaterialFlatButton();
-            this.materialSwitch1 = new MaterialSwitch();
-            this.materialLabel3 = new MaterialSkin.Controls.MaterialLabel();
             this.materialTabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -433,8 +431,6 @@ namespace MaterialSkinExample
             // tabPage2
             // 
             this.tabPage2.BackColor = System.Drawing.Color.White;
-            this.tabPage2.Controls.Add(this.materialLabel3);
-            this.tabPage2.Controls.Add(this.materialSwitch1);
             this.tabPage2.Controls.Add(this.materialCheckBox6);
             this.tabPage2.Controls.Add(this.materialCheckBox5);
             this.tabPage2.Controls.Add(this.materialCheckbox3);
@@ -714,29 +710,6 @@ namespace MaterialSkinExample
             this.materialFlatButton3.Text = "DISABLED";
             this.materialFlatButton3.UseVisualStyleBackColor = true;
             // 
-            // materialSwitch1
-            // 
-            this.materialSwitch1.AutoSize = true;
-            this.materialSwitch1.Location = new System.Drawing.Point(528, 16);
-            this.materialSwitch1.Name = "materialSwitch1";
-            this.materialSwitch1.Size = new System.Drawing.Size(47, 19);
-            this.materialSwitch1.TabIndex = 10;
-            this.materialSwitch1.Text = "materialSwitch1";
-            this.materialSwitch1.UseVisualStyleBackColor = true;
-            // 
-            // materialLabel3
-            // 
-            this.materialLabel3.AutoSize = true;
-            this.materialLabel3.Depth = 0;
-            this.materialLabel3.Font = new System.Drawing.Font("Roboto", 11F);
-            this.materialLabel3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.materialLabel3.Location = new System.Drawing.Point(472, 16);
-            this.materialLabel3.MouseState = MaterialSkin.MouseState.HOVER;
-            this.materialLabel3.Name = "materialLabel3";
-            this.materialLabel3.Size = new System.Drawing.Size(54, 19);
-            this.materialLabel3.TabIndex = 11;
-            this.materialLabel3.Text = "Switch";
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -814,7 +787,5 @@ namespace MaterialSkinExample
         private MaterialFlatButton materialFlatButton3;
         private MaterialFlatButton materialFlatButton4;
         private MaterialLabel materialLabel2;
-        private MaterialLabel materialLabel3;
-        private MaterialSwitch materialSwitch1;
     }
 }

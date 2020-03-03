@@ -68,9 +68,6 @@
     <Compile Include="Controls\MaterialSingleLineTextField.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\MaterialSwitch.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="Controls\MaterialTabControl.cs">
       <SubType>Component</SubType>
     </Compile>
