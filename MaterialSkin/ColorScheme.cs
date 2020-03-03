@@ -265,8 +265,6 @@ namespace MaterialSkin
         Grey700 = 0x616161,
         Grey800 = 0x424242,
         Grey900 = 0x212121,
-        Grey1000B = 0x000000,
-        Grey1000W = 0xFFFFFF,
         BlueGrey50 = 0xECEFF1,
         BlueGrey100 = 0xCFD8DC,
         BlueGrey200 = 0xB0BEC5,
