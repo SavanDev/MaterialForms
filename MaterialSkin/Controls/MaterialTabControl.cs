@@ -1,15 +1,17 @@
-﻿using System;
-using System.ComponentModel;
-using System.Windows.Forms;
-
-namespace MaterialSkin.Controls
+﻿namespace MaterialSkin.Controls
 {
+    using System;
+    using System.ComponentModel;
+    using System.Windows.Forms;
+
     public class MaterialTabControl : TabControl, IMaterialControl
     {
         [Browsable(false)]
         public int Depth { get; set; }
+
         [Browsable(false)]
         public MaterialSkinManager SkinManager => MaterialSkinManager.Instance;
+
         [Browsable(false)]
         public MouseState MouseState { get; set; }
 

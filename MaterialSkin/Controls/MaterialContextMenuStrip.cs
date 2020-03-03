@@ -1,27 +1,30 @@
-﻿using System.ComponentModel;
-using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.Drawing.Text;
-using System.Windows.Forms;
-using MaterialSkin.Animations;
-
-namespace MaterialSkin.Controls
+﻿namespace MaterialSkin.Controls
 {
+    using MaterialSkin.Animations;
+    using System.ComponentModel;
+    using System.Drawing;
+    using System.Drawing.Drawing2D;
+    using System.Drawing.Text;
+    using System.Windows.Forms;
+
     public class MaterialContextMenuStrip : ContextMenuStrip, IMaterialControl
     {
         //Properties for managing the material design properties
         [Browsable(false)]
         public int Depth { get; set; }
+
         [Browsable(false)]
         public MaterialSkinManager SkinManager => MaterialSkinManager.Instance;
+
         [Browsable(false)]
         public MouseState MouseState { get; set; }
 
-
         internal AnimationManager AnimationManager;
+
         internal Point AnimationSource;
 
         public delegate void ItemClickStart(object sender, ToolStripItemClickedEventArgs e);
+
         public event ItemClickStart OnItemClickStart;
 
         public MaterialContextMenuStrip()
@@ -36,7 +39,7 @@ namespace MaterialSkin.Controls
             AnimationManager.OnAnimationProgress += sender => Invalidate();
             AnimationManager.OnAnimationFinished += sender => OnItemClicked(_delayesArgs);
 
-            BackColor = SkinManager.GetApplicationBackgroundColor();
+            BackColor = SkinManager.BackdropColor;
         }
 
         protected override void OnMouseUp(MouseEventArgs mea)
@@ -47,6 +50,7 @@ namespace MaterialSkin.Controls
         }
 
         private ToolStripItemClickedEventArgs _delayesArgs;
+
         protected override void OnItemClicked(ToolStripItemClickedEventArgs e)
         {
             if (e.ClickedItem != null && !(e.ClickedItem is ToolStripSeparator))
@@ -95,33 +99,37 @@ namespace MaterialSkin.Controls
     {
         //Properties for managing the material design properties
         public int Depth { get; set; }
-        public MaterialSkinManager SkinManager => MaterialSkinManager.Instance;
-        public MouseState MouseState { get; set; }
 
+        public MaterialSkinManager SkinManager => MaterialSkinManager.Instance;
+
+        public MouseState MouseState { get; set; }
 
         protected override void OnRenderItemText(ToolStripItemTextRenderEventArgs e)
         {
             var g = e.Graphics;
-            g.TextRenderingHint = TextRenderingHint.AntiAlias;
+            g.TextRenderingHint = TextRenderingHint.ClearTypeGridFit;
 
             var itemRect = GetItemRect(e.Item);
             var textRect = new Rectangle(24, itemRect.Y, itemRect.Width - (24 + 16), itemRect.Height);
-            g.DrawString(
-                e.Text,
-                SkinManager.ROBOTO_MEDIUM_10,
-                e.Item.Enabled ? SkinManager.GetPrimaryTextBrush() : SkinManager.GetDisabledOrHintBrush(),
-                textRect,
-                new StringFormat { LineAlignment = StringAlignment.Center });
+
+            using (NativeTextRenderer NativeText = new NativeTextRenderer(g))
+            {
+                NativeText.DrawTransparentText(e.Text, SkinManager.getLogFontByType(MaterialSkinManager.fontType.Body2),
+                    e.Item.Enabled ? SkinManager.TextHighEmphasisColor : SkinManager.TextDisabledOrHintColor,
+                    textRect.Location,
+                    textRect.Size,
+                    NativeTextRenderer.TextAlignFlags.Left | NativeTextRenderer.TextAlignFlags.Middle);
+            }
         }
 
         protected override void OnRenderMenuItemBackground(ToolStripItemRenderEventArgs e)
         {
             var g = e.Graphics;
-            g.Clear(SkinManager.GetApplicationBackgroundColor());
+            g.Clear(SkinManager.BackdropColor);
 
             //Draw background
             var itemRect = GetItemRect(e.Item);
-            g.FillRectangle(e.Item.Selected && e.Item.Enabled ? SkinManager.GetCmsSelectedItemBrush() : new SolidBrush(SkinManager.GetApplicationBackgroundColor()), itemRect);
+            g.FillRectangle(e.Item.Selected && e.Item.Enabled ? SkinManager.BackgroundFocusBrush : SkinManager.BackdropBrush, itemRect);
 
             //Ripple animation
             var toolStrip = e.ToolStrip as MaterialContextMenuStrip;
@@ -144,16 +152,15 @@ namespace MaterialSkin.Controls
 
         protected override void OnRenderImageMargin(ToolStripRenderEventArgs e)
         {
-            //base.OnRenderImageMargin(e);
         }
 
         protected override void OnRenderSeparator(ToolStripSeparatorRenderEventArgs e)
         {
             var g = e.Graphics;
 
-            g.FillRectangle(new SolidBrush(SkinManager.GetApplicationBackgroundColor()), e.Item.Bounds);
+            g.FillRectangle(SkinManager.BackdropBrush, e.Item.Bounds);
             g.DrawLine(
-                new Pen(SkinManager.GetDividersColor()),
+                new Pen(SkinManager.DividersColor),
                 new Point(e.Item.Bounds.Left, e.Item.Bounds.Height / 2),
                 new Point(e.Item.Bounds.Right, e.Item.Bounds.Height / 2));
         }
@@ -163,7 +170,7 @@ namespace MaterialSkin.Controls
             var g = e.Graphics;
 
             g.DrawRectangle(
-                new Pen(SkinManager.GetDividersColor()),
+                new Pen(SkinManager.DividersColor),
                 new Rectangle(e.AffectedBounds.X, e.AffectedBounds.Y, e.AffectedBounds.Width - 1, e.AffectedBounds.Height - 1));
         }
 
@@ -173,7 +180,7 @@ namespace MaterialSkin.Controls
             const int ARROW_SIZE = 4;
 
             var arrowMiddle = new Point(e.ArrowRectangle.X + e.ArrowRectangle.Width / 2, e.ArrowRectangle.Y + e.ArrowRectangle.Height / 2);
-            var arrowBrush = e.Item.Enabled ? SkinManager.GetPrimaryTextBrush() : SkinManager.GetDisabledOrHintBrush();
+            var arrowBrush = e.Item.Enabled ? SkinManager.TextHighEmphasisBrush : SkinManager.TextDisabledOrHintBrush;
             using (var arrowPath = new GraphicsPath())
             {
                 arrowPath.AddLines(

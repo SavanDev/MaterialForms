@@ -1,22 +1,25 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Drawing.Text;
-using System.Windows.Forms;
-using MaterialSkin.Animations;
-
-namespace MaterialSkin.Controls
+﻿namespace MaterialSkin.Controls
 {
+    using MaterialSkin.Animations;
+    using System.Collections.Generic;
+    using System.ComponentModel;
+    using System.Drawing;
+    using System.Drawing.Text;
+    using System.Windows.Forms;
+
     public class MaterialTabSelector : Control, IMaterialControl
     {
         [Browsable(false)]
         public int Depth { get; set; }
+
         [Browsable(false)]
         public MaterialSkinManager SkinManager => MaterialSkinManager.Instance;
+
         [Browsable(false)]
         public MouseState MouseState { get; set; }
 
         private MaterialTabControl _baseTabControl;
+
         public MaterialTabControl BaseTabControl
         {
             get { return _baseTabControl; }
@@ -46,11 +49,15 @@ namespace MaterialSkin.Controls
         }
 
         private int _previousSelectedTabIndex;
+
         private Point _animationSource;
+
         private readonly AnimationManager _animationManager;
 
         private List<Rectangle> _tabRects;
+
         private const int TAB_HEADER_PADDING = 24;
+
         private const int TAB_INDICATOR_HEIGHT = 2;
 
         public MaterialTabSelector()
@@ -66,10 +73,16 @@ namespace MaterialSkin.Controls
             _animationManager.OnAnimationProgress += sender => Invalidate();
         }
 
+        protected override void OnCreateControl()
+        {
+            base.OnCreateControl();
+            Font = SkinManager.getFontByType(MaterialSkinManager.fontType.Body1);
+        }
+
         protected override void OnPaint(PaintEventArgs e)
         {
             var g = e.Graphics;
-            g.TextRenderingHint = TextRenderingHint.AntiAlias;
+            g.TextRenderingHint = TextRenderingHint.ClearTypeGridFit;
 
             g.Clear(SkinManager.ColorScheme.PrimaryColor);
 
@@ -96,10 +109,18 @@ namespace MaterialSkin.Controls
             foreach (TabPage tabPage in _baseTabControl.TabPages)
             {
                 var currentTabIndex = _baseTabControl.TabPages.IndexOf(tabPage);
-                Brush textBrush = new SolidBrush(Color.FromArgb(CalculateTextAlpha(currentTabIndex, animationProgress), SkinManager.ColorScheme.TextColor));
 
-                g.DrawString(tabPage.Text.ToUpper(), SkinManager.ROBOTO_MEDIUM_10, textBrush, _tabRects[currentTabIndex], new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center });
-                textBrush.Dispose();
+                using (NativeTextRenderer NativeText = new NativeTextRenderer(g))
+                {
+                    Rectangle textLocation = _tabRects[currentTabIndex];
+                    NativeText.DrawTransparentText(
+                        tabPage.Text.ToUpper(),
+                        SkinManager.getLogFontByType(MaterialSkinManager.fontType.Button),
+                        Color.FromArgb(CalculateTextAlpha(currentTabIndex, animationProgress), SkinManager.ColorScheme.TextColor),
+                        textLocation.Location,
+                        textLocation.Size,
+                        NativeTextRenderer.TextAlignFlags.Center | NativeTextRenderer.TextAlignFlags.Middle);
+                }
             }
 
             //Animate tab indicator
@@ -116,8 +137,8 @@ namespace MaterialSkin.Controls
 
         private int CalculateTextAlpha(int tabIndex, double animationProgress)
         {
-            int primaryA = SkinManager.ACTION_BAR_TEXT.A;
-            int secondaryA = SkinManager.ACTION_BAR_TEXT_SECONDARY.A;
+            int primaryA = SkinManager.TextHighEmphasisColor.A;
+            int secondaryA = SkinManager.TextMediumEmphasisColor.A;
 
             if (tabIndex == _baseTabControl.SelectedIndex && !_animationManager.IsAnimating())
             {
@@ -163,10 +184,10 @@ namespace MaterialSkin.Controls
             {
                 using (var g = Graphics.FromImage(b))
                 {
-                    _tabRects.Add(new Rectangle(SkinManager.FORM_PADDING, 0, TAB_HEADER_PADDING * 2 + (int)g.MeasureString(_baseTabControl.TabPages[0].Text, SkinManager.ROBOTO_MEDIUM_10).Width, Height));
+                    _tabRects.Add(new Rectangle(SkinManager.FORM_PADDING, 0, TAB_HEADER_PADDING * 2 + (int)g.MeasureString(_baseTabControl.TabPages[0].Text, Font).Width, Height));
                     for (int i = 1; i < _baseTabControl.TabPages.Count; i++)
                     {
-                        _tabRects.Add(new Rectangle(_tabRects[i - 1].Right, 0, TAB_HEADER_PADDING * 2 + (int)g.MeasureString(_baseTabControl.TabPages[i].Text, SkinManager.ROBOTO_MEDIUM_10).Width, Height));
+                        _tabRects.Add(new Rectangle(_tabRects[i - 1].Right, 0, TAB_HEADER_PADDING * 2 + (int)g.MeasureString(_baseTabControl.TabPages[i].Text, Font).Width, Height));
                     }
                 }
             }
