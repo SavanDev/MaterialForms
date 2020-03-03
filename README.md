@@ -23,16 +23,13 @@ TabControl | Yes | N/A | N/A | Yes
 ContextMenuStrip | Yes | Yes | Yes | Yes
 ListView | Yes | Yes | No | No
 ProgressBar | Yes | Yes | No | No 
-FloatingActionButton | Yes | N/A | N/A | Yes
+FloatingActionButton | No | No | No | No
 Dialogs | No | No | No | No
 Switch | Yes | Yes | Yes | Yes
-Card | Yes | Yes | No | No
+Cards | Yes | Yes | Yes | No
 Snackbar | No | No | No | No
 Banner | No | No | No | No
 More... | No | No | No | No
-
-*Switch and Card based in [ViKi4Tech LollipopUI](https://github.com/Viki4Tech/MaterialDesign).*
-*Snackbar and FloatingActionButton made by [lsieben97](https://github.com/lsieben97).*
 
 ---
 

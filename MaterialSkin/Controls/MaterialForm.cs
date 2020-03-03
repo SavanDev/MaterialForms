@@ -78,9 +78,9 @@ namespace MaterialSkin.Controls
             {HTBOTTOMRIGHT, WMSZ_BOTTOMRIGHT}
         };
 
-        private readonly int STATUS_BAR_BUTTON_WIDTH;
-        private readonly int STATUS_BAR_HEIGHT;
-        private readonly int ACTION_BAR_HEIGHT;
+        private const int STATUS_BAR_BUTTON_WIDTH = STATUS_BAR_HEIGHT;
+        private const int STATUS_BAR_HEIGHT = 24;
+        private const int ACTION_BAR_HEIGHT = 40;
 
         private const uint TPM_LEFTALIGN = 0x0000;
         private const uint TPM_RETURNCMD = 0x0100;
@@ -118,21 +118,6 @@ namespace MaterialSkin.Controls
             public int Height()
             {
                 return bottom - top;
-            }
-        }
-
-        // Set Header Text Position
-        [Browsable(true)]
-        [Category("Appearance")]
-        public Align TextAlign
-        {
-            get
-            {
-                return (Align)_textAlign;
-            }
-            set
-            {
-                _textAlign = (StringAlignment)value;
             }
         }
 
@@ -176,15 +161,6 @@ namespace MaterialSkin.Controls
             Sizable = true;
             DoubleBuffered = true;
             SetStyle(ControlStyles.OptimizedDoubleBuffer | ControlStyles.ResizeRedraw, true);
-
-            float scale;
-            using (Graphics g = this.CreateGraphics())
-            {
-                scale = g.DpiY / 96.0f;
-            }
-            ACTION_BAR_HEIGHT = (int)(40 * scale);
-            STATUS_BAR_HEIGHT = (int)(24 * scale);
-            STATUS_BAR_BUTTON_WIDTH = STATUS_BAR_HEIGHT;
 
             // This enables the form to trigger the MouseMove event even when mouse is over another control
             Application.AddMessageFilter(new MouseMessageFilter());
@@ -586,17 +562,7 @@ namespace MaterialSkin.Controls
             }
 
             //Form title
-            g.DrawString(Text, SkinManager.ROBOTO_MEDIUM_12, SkinManager.ColorScheme.TextBrush, new Rectangle(SkinManager.FORM_PADDING, STATUS_BAR_HEIGHT, Width - (SkinManager.FORM_PADDING * 2), ACTION_BAR_HEIGHT), new StringFormat { LineAlignment = StringAlignment.Center, Alignment = _textAlign });
-        }
-
-        private StringAlignment _textAlign;
-        
-        // Easier read in the properties window
-        public enum Align
-        {
-            Left = 0,
-            Center = 1,
-            Right = 2
+            g.DrawString(Text, SkinManager.ROBOTO_MEDIUM_12, SkinManager.ColorScheme.TextBrush, new Rectangle(SkinManager.FORM_PADDING, STATUS_BAR_HEIGHT, Width, ACTION_BAR_HEIGHT), new StringFormat { LineAlignment = StringAlignment.Center });
         }
     }
 

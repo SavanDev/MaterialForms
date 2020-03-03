@@ -20,17 +20,6 @@ namespace MaterialSkin.Controls
         private readonly BaseTextBox _baseTextBox;
         private readonly AnimationManager _animationManager;
 
-        bool readOnly;
-        public bool ReadOnly
-        {
-            get { return readOnly; }
-            set
-            {
-                readOnly = value;
-                _baseTextBox.ReadOnly = value;
-            }
-        }
-
         public override string Text { get { return _baseTextBox.Text; } set { _baseTextBox.Text = value; } }
         public new object Tag { get { return _baseTextBox.Tag; } set { _baseTextBox.Tag = value; } }
         public new int MaxLength { get { return _baseTextBox.MaxLength; } set { _baseTextBox.MaxLength = value; } }

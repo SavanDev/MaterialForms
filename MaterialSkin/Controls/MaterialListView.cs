@@ -28,7 +28,7 @@ namespace MaterialSkin.Controls
             OwnerDraw = true;
             ResizeRedraw = true;
             BorderStyle = BorderStyle.None;
-            SetStyle(ControlStyles.DoubleBuffer | ControlStyles.AllPaintingInWmPaint, true);
+            SetStyle(ControlStyles.DoubleBuffer | ControlStyles.OptimizedDoubleBuffer, true);
 
             //Fix for hovers, by default it doesn't redraw
             //TODO: should only redraw when the hovered line changed, this to reduce unnecessary redraws
@@ -37,28 +37,26 @@ namespace MaterialSkin.Controls
             MouseEnter += delegate
             {
                 MouseState = MouseState.HOVER;
-                            };
+            };
             MouseLeave += delegate
             {
                 MouseState = MouseState.OUT;
                 MouseLocation = new Point(-1, -1);
                 HoveredItem = null;
-                Invalidate(Bounds);
+                Invalidate();
             };
             MouseDown += delegate { MouseState = MouseState.DOWN; };
             MouseUp += delegate { MouseState = MouseState.HOVER; };
-            MouseMove += MouseMoved;
-            MouseWheel += MouseMoved;
-        }
-
-        private void MouseMoved(object sender, MouseEventArgs args)
-        {
-            MouseLocation = args.Location;
-            var currentHoveredItem = GetItemAt(MouseLocation.X, MouseLocation.Y);
-            if (HoveredItem == currentHoveredItem) return;
-            if (currentHoveredItem != null) Invalidate(currentHoveredItem.Bounds);
-            if (HoveredItem != null) Invalidate(HoveredItem.Bounds);
-            HoveredItem = currentHoveredItem;
+            MouseMove += delegate (object sender, MouseEventArgs args)
+            {
+                MouseLocation = args.Location;
+                var currentHoveredItem = this.GetItemAt(MouseLocation.X, MouseLocation.Y);
+                if (HoveredItem != currentHoveredItem)
+                {
+                    HoveredItem = currentHoveredItem;
+                    Invalidate();
+                }
+            };
         }
 
         protected override void OnDrawColumnHeader(DrawListViewColumnHeaderEventArgs e)
