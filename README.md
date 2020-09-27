@@ -2,7 +2,7 @@
 
 Theming .NET WinForms, C# or VB.Net, to Google's Material Design Principles.
 
-This project is **ACTIVE** _(With some long pauses in between, but I still read every issue and check every PR)_
+**This fork is a own personalization of the project for will adapt to my own design guidelines (Phoenix Design) and its a work in progress.**
 
 ![home](https://user-images.githubusercontent.com/8310271/66237904-9dff9380-e6cc-11e9-9f08-3c5ba182e144.png)
 
@@ -90,7 +90,7 @@ Download the precompiled DLL available on the releases section and add it as a e
 #### Compile from the latest master
 
 Clone the project from GitHub, then add the MaterialSkin.csproj to your own solution, then add it as a project reference on your project.
-  
+
 ### 2. Add the MaterialSkin components to your ToolBox
 
 Simply drag the MaterialSkin.dll file into your IDE's ToolBox and all the controls should be added there.
@@ -98,20 +98,20 @@ Simply drag the MaterialSkin.dll file into your IDE's ToolBox and all the contro
 ### 3. Inherit from MaterialForm
 
 Open the code behind your Form you wish to skin. Make it inherit from MaterialForm rather than Form. Don't forget to put the library in your imports, so it can find the MaterialForm class!
-  
+
 #### C# (Form1.cs)
 
 ```cs
 public partial class Form1 : MaterialForm
 ```
-  
+
 #### VB.NET (Form1.Designer.vb)
 
 ```vb
 Partial Class Form1
   Inherits MaterialSkin.Controls.MaterialForm
 ```
-  
+
 ### 4. Initialize your colorscheme
 
 Set your preferred colors & theme. Also add the form to the manager so it keeps updated if the color scheme or theme changes later on.

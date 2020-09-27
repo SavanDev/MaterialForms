@@ -24,7 +24,7 @@ namespace MaterialSkinExample
             // MaterialSkinManager properties
             materialSkinManager.AddFormToManage(this);
             materialSkinManager.Theme = MaterialSkinManager.Themes.LIGHT;
-            materialSkinManager.ColorScheme = new ColorScheme(Primary.Indigo500, Primary.Indigo700, Primary.Indigo100, Accent.Pink200, TextShade.WHITE);
+            //materialSkinManager.ColorScheme = new ColorScheme(Primary.Indigo500, Primary.Indigo700, Primary.Indigo100, Accent.Pink200, TextShade.WHITE);
 
             // Add dummy data to the listview
             seedListView();
@@ -118,11 +118,6 @@ namespace MaterialSkinExample
         private void materialFlatButton4_Click(object sender, EventArgs e)
         {
             materialProgressBar1.Value = Math.Max(materialProgressBar1.Value - 10, 0);
-        }
-
-        private void materialSwitch4_CheckedChanged(object sender, EventArgs e)
-        {
-            DrawerUseColors = materialSwitch4.Checked;
         }
 
         private void MaterialSwitch5_CheckedChanged(object sender, EventArgs e)

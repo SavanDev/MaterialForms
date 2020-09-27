@@ -60,23 +60,6 @@
         public bool AutoHide { get; set; }
 
         [Category("Drawer")]
-        private bool _useColors;
-
-        public bool UseColors
-        {
-            get
-            {
-                return _useColors;
-            }
-            set
-            {
-                _useColors = value;
-                preProcessIcons();
-                Invalidate();
-            }
-        }
-
-        [Category("Drawer")]
         private bool _highlightWithAccent;
 
         public bool HighlightWithAccent
@@ -189,7 +172,7 @@
                 return;
 
             // Calculate lightness and color
-            float l = UseColors ? SkinManager.ColorScheme.TextColor.R / 255 : SkinManager.Theme == MaterialSkinManager.Themes.LIGHT ? 0f : 1f;
+            float l = SkinManager.ColorScheme.TextColor.R / 255;
             float r = (_highlightWithAccent ? SkinManager.ColorScheme.AccentColor.R : SkinManager.ColorScheme.PrimaryColor.R) / 255f;
             float g = (_highlightWithAccent ? SkinManager.ColorScheme.AccentColor.G : SkinManager.ColorScheme.PrimaryColor.G) / 255f;
             float b = (_highlightWithAccent ? SkinManager.ColorScheme.AccentColor.B : SkinManager.ColorScheme.PrimaryColor.B) / 255f;
@@ -415,7 +398,7 @@
             g.TextRenderingHint = TextRenderingHint.ClearTypeGridFit;
 
             // redraw stuff
-            g.Clear(UseColors ? SkinManager.ColorScheme.PrimaryColor : SkinManager.BackdropColor);
+            g.Clear(SkinManager.ColorScheme.PrimaryColor);
 
             if (_baseTabControl == null)
                 return;
@@ -439,9 +422,7 @@
             if (_clickAnimManager.IsAnimating())
             {
                 var rippleBrush = new SolidBrush(Color.FromArgb((int)(70 - (clickAnimProgress * 70)),
-                    UseColors ? SkinManager.ColorScheme.AccentColor : // Using colors
-                    SkinManager.Theme == MaterialSkinManager.Themes.LIGHT ? SkinManager.ColorScheme.PrimaryColor : // light theme
-                    SkinManager.ColorScheme.LightPrimaryColor)); // dark theme
+                    SkinManager.ColorScheme.AccentColor));
 
                 g.SetClip(_drawerItemPaths[_baseTabControl.SelectedIndex]);
                 g.FillEllipse(rippleBrush, new Rectangle(_animationSource.X + dx - (rSize / 2), _animationSource.Y - rSize / 2, rSize, rSize));
@@ -456,19 +437,14 @@
 
                 // Background
                 Brush bgBrush = new SolidBrush(Color.FromArgb(CalculateAlpha(60, 0, currentTabIndex, clickAnimProgress, 1 - showHideAnimProgress),
-                    UseColors ? _backgroundWithAccent ? SkinManager.ColorScheme.AccentColor : SkinManager.ColorScheme.LightPrimaryColor : // using colors
-                    _backgroundWithAccent ? SkinManager.ColorScheme.AccentColor : // defaul accent
-                    SkinManager.Theme == MaterialSkinManager.Themes.LIGHT ? SkinManager.ColorScheme.PrimaryColor : // default light
-                    SkinManager.ColorScheme.LightPrimaryColor)); // default dark
+                    SkinManager.ColorScheme.AccentColor));
                 g.FillPath(bgBrush, _drawerItemPaths[currentTabIndex]);
                 bgBrush.Dispose();
 
                 // Text
-                Color textColor = Color.FromArgb(CalculateAlphaZeroWhenClosed(SkinManager.TextHighEmphasisColor.A, UseColors ? SkinManager.TextMediumEmphasisColor.A : 255, currentTabIndex, clickAnimProgress, 1 - showHideAnimProgress), // alpha
-                    UseColors ? (currentTabIndex == _baseTabControl.SelectedIndex ? (_highlightWithAccent ? SkinManager.ColorScheme.AccentColor : SkinManager.ColorScheme.PrimaryColor) // Use colors - selected
-                    : SkinManager.ColorScheme.TextColor) :  // Use colors - not selected
-                    (currentTabIndex == _baseTabControl.SelectedIndex ? (_highlightWithAccent ? SkinManager.ColorScheme.AccentColor : SkinManager.ColorScheme.PrimaryColor) : // selected
-                    SkinManager.TextHighEmphasisColor));
+                Color textColor = Color.FromArgb(CalculateAlphaZeroWhenClosed(SkinManager.TextHighEmphasisColor.A, SkinManager.TextMediumEmphasisColor.A, currentTabIndex, clickAnimProgress, 1 - showHideAnimProgress), // alpha
+                    (currentTabIndex == _baseTabControl.SelectedIndex ? (_highlightWithAccent ? SkinManager.ColorScheme.AccentColor : SkinManager.ColorScheme.PrimaryColor) // Use colors - selected
+                    : SkinManager.ColorScheme.TextColor));
 
                 IntPtr textFont = SkinManager.getLogFontByType(MaterialSkinManager.fontType.Subtitle2);
 
@@ -496,15 +472,6 @@
                     }
 
                     g.FillRectangle(currentTabIndex == _baseTabControl.SelectedIndex ? iconsSelectedBrushes[tabPage.ImageKey] : iconsBrushes[tabPage.ImageKey], iconRect);
-                }
-            }
-
-            // Draw divider if not using colors
-            if (!UseColors)
-            {
-                using (Pen dividerPen = new Pen(SkinManager.DividersColor, 1))
-                {
-                    g.DrawLine(dividerPen, Width - 1, 0, Width - 1, Height);
                 }
             }
 

@@ -5,6 +5,7 @@
     using System.Collections.Generic;
     using System.ComponentModel;
     using System.Drawing;
+    using System.Drawing.Drawing2D;
     using System.Drawing.Text;
     using System.Linq;
     using System.Runtime.InteropServices;
@@ -29,6 +30,12 @@
 
         [Category("Layout")]
         public bool Sizable { get; set; }
+
+        [Category("Footer Bar")]
+        public bool FooterBar { get; set; }
+
+        [Category("Footer Bar")]
+        public string FooterText { get; set; }
 
         [DllImport("user32.dll")]
         public static extern int SendMessage(IntPtr hWnd, int Msg, int wParam, int lParam);
@@ -90,8 +97,9 @@
         };
 
         private const int STATUS_BAR_BUTTON_WIDTH = STATUS_BAR_HEIGHT;
-        private const int STATUS_BAR_HEIGHT = 24;
-        private const int ACTION_BAR_HEIGHT = 40;
+        private const int STATUS_BAR_HEIGHT = 25;
+        private const int ACTION_BAR_HEIGHT = 50;
+        private const int FOOTER_BAR_HEIGHT = 30;
         private const uint TPM_LEFTALIGN = 0x0000;
         private const uint TPM_RETURNCMD = 0x0100;
         private const int WM_SYSCOMMAND = 0x0112;
@@ -157,6 +165,7 @@
         private Rectangle _maxButtonBounds;
         private Rectangle _xButtonBounds;
         private Rectangle _actionBarBounds;
+        private Rectangle _footerBarBounds;
 
         public Rectangle UserArea
         {
@@ -223,6 +232,7 @@
                 {
                     drawerControl.ShowIconsWhenHidden = _drawerShowIconsWhenHidden;
                     drawerControl.Refresh();
+                    Refresh();
                 }
             }
         }
@@ -254,26 +264,6 @@
                         drawerControl.Show();
                     else
                         drawerControl.Hide();
-                }
-            }
-        }
-
-        private bool _drawerUseColors;
-
-        [Category("Drawer")]
-        public bool DrawerUseColors
-        {
-            get
-            {
-                return _drawerUseColors;
-            }
-            set
-            {
-                _drawerUseColors = value;
-                if (drawerControl != null)
-                {
-                    drawerControl.UseColors = value;
-                    drawerControl.Refresh();
                 }
             }
         }
@@ -345,8 +335,8 @@
                 drawerOverlay.Opacity = (float)(_drawerShowHideAnimManager.GetProgress() * 0.55f);
             };
 
-            int H = Size.Height - _statusBarBounds.Height - _actionBarBounds.Height;
-            int Y = Location.Y + _statusBarBounds.Height + _actionBarBounds.Height;
+            int H = Size.Height - _statusBarBounds.Height;
+            int Y = Location.Y + _statusBarBounds.Height;
 
             // Drawer Form definitions
             drawerForm.BackColor = Color.LimeGreen;
@@ -414,14 +404,14 @@
 
             Resize += (sender, e) =>
             {
-                H = Size.Height - _statusBarBounds.Height - _actionBarBounds.Height;
+                H = Size.Height - _statusBarBounds.Height;
                 drawerForm.Size = new Size(DrawerWidth, H);
                 drawerOverlay.Size = new Size(Size.Width, H);
             };
 
             Move += (sender, e) =>
             {
-                Point pos = new Point(Location.X, Location.Y + _statusBarBounds.Height + _actionBarBounds.Height);
+                Point pos = new Point(Location.X, Location.Y + _statusBarBounds.Height);
                 drawerForm.Location = pos;
                 drawerOverlay.Location = pos;
             };
@@ -446,7 +436,7 @@
             // Form Padding corrections
 
             if (Padding.Top < (_statusBarBounds.Height + _actionBarBounds.Height))
-                Padding = new Padding(Padding.Left, (_statusBarBounds.Height + _actionBarBounds.Height), Padding.Right, Padding.Bottom);
+                Padding = new Padding(Padding.Left, (_statusBarBounds.Height + _actionBarBounds.Height), Padding.Right, Padding.Bottom + (FooterBar ? FOOTER_BAR_HEIGHT : 0));
 
             originalPadding = Padding;
 
@@ -789,6 +779,7 @@
             _xButtonBounds = new Rectangle((Width) - STATUS_BAR_BUTTON_WIDTH, 0, STATUS_BAR_BUTTON_WIDTH, STATUS_BAR_HEIGHT);
             _statusBarBounds = new Rectangle(0, 0, Width, STATUS_BAR_HEIGHT);
             _actionBarBounds = new Rectangle(0, STATUS_BAR_HEIGHT, Width, ACTION_BAR_HEIGHT);
+            _footerBarBounds = new Rectangle(0, Height - FOOTER_BAR_HEIGHT, Width, FOOTER_BAR_HEIGHT);
         }
 
         protected override void OnPaint(PaintEventArgs e)
@@ -796,9 +787,11 @@
             var g = e.Graphics;
             g.TextRenderingHint = TextRenderingHint.ClearTypeGridFit;
 
+            LinearGradientBrush lgBrush = new LinearGradientBrush(_actionBarBounds, SkinManager.ColorScheme.PrimaryColor, SkinManager.ColorScheme.DarkPrimaryColor, LinearGradientMode.Horizontal);
+
             g.Clear(SkinManager.BackdropColor);
             g.FillRectangle(SkinManager.ColorScheme.DarkPrimaryBrush, _statusBarBounds);
-            g.FillRectangle(SkinManager.ColorScheme.PrimaryBrush, _actionBarBounds);
+            g.FillRectangle(lgBrush, _actionBarBounds);
 
             //Draw border
             using (var borderPen = new Pen(SkinManager.DividersColor, 1))
@@ -885,7 +878,7 @@
             // Drawer Icon
             if (DrawerTabControl != null)
             {
-                _drawerIconRect = new Rectangle(SkinManager.FORM_PADDING / 2, STATUS_BAR_HEIGHT, 24 + SkinManager.FORM_PADDING + SkinManager.FORM_PADDING / 2, ACTION_BAR_HEIGHT);
+                _drawerIconRect = new Rectangle((DrawerTabControl != null && DrawerShowIconsWhenHidden ? drawerControl.MinWidth : 0) + SkinManager.FORM_PADDING / 2, STATUS_BAR_HEIGHT, 24 + SkinManager.FORM_PADDING + SkinManager.FORM_PADDING / 2, ACTION_BAR_HEIGHT);
                 // Ripple
                 if (_clickAnimManager.IsAnimating())
                 {
@@ -931,12 +924,27 @@
             //Form title
             using (NativeTextRenderer NativeText = new NativeTextRenderer(g))
             {
-                Rectangle textLocation = new Rectangle(SkinManager.FORM_PADDING + (DrawerTabControl != null ? 24 + (int)(SkinManager.FORM_PADDING * 1.5) : 0), STATUS_BAR_HEIGHT, Width, ACTION_BAR_HEIGHT);
-                NativeText.DrawTransparentText(Text, SkinManager.getLogFontByType(MaterialSkinManager.fontType.H6),
+                Rectangle textLocation = new Rectangle(SkinManager.FORM_PADDING + (DrawerTabControl != null ? 24 + (int)(SkinManager.FORM_PADDING * 1.5) + (DrawerShowIconsWhenHidden ? drawerControl.MinWidth : 0) : 0), STATUS_BAR_HEIGHT, Width, ACTION_BAR_HEIGHT);
+                NativeText.DrawTransparentText(Text, SkinManager.getLogFontByType(MaterialSkinManager.fontType.TitleForm),
                     SkinManager.ColorScheme.TextColor,
                     textLocation.Location,
                     textLocation.Size,
                     NativeTextRenderer.TextAlignFlags.Left | NativeTextRenderer.TextAlignFlags.Middle);
+            }
+
+            // Footer bar
+            if (FooterBar)
+            {
+                g.FillRectangle(lgBrush, _footerBarBounds);
+                using (NativeTextRenderer NativeText = new NativeTextRenderer(g))
+                {
+                    Rectangle footerLocation = new Rectangle(0, Height - FOOTER_BAR_HEIGHT, Width - SkinManager.FORM_PADDING, FOOTER_BAR_HEIGHT);
+                    NativeText.DrawTransparentText(FooterText, SkinManager.getLogFontByType(MaterialSkinManager.fontType.Caption),
+                        SkinManager.ColorScheme.TextColor,
+                        footerLocation.Location,
+                        footerLocation.Size,
+                        NativeTextRenderer.TextAlignFlags.Right | NativeTextRenderer.TextAlignFlags.Middle);
+                }
             }
         }
 
@@ -956,12 +964,7 @@
             this.MinimumSize = new System.Drawing.Size(300, 200);
             this.Name = "MaterialForm";
             this.Padding = new System.Windows.Forms.Padding(3, 64, 3, 3);
-            this.Load += new System.EventHandler(this.MaterialForm_Load);
             this.ResumeLayout(false);
-        }
-
-        private void MaterialForm_Load(object sender, EventArgs e)
-        {
         }
     }
 

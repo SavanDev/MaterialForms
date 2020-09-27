@@ -35,7 +35,7 @@
         private MaterialSkinManager()
         {
             Theme = Themes.LIGHT;
-            ColorScheme = new ColorScheme(Primary.Indigo500, Primary.Indigo700, Primary.Indigo100, Accent.Pink200, TextShade.WHITE);
+            ColorScheme = new ColorScheme(Primary.Blue800, Primary.Blue900, Primary.Blue700, Accent.Pink400, TextShade.WHITE);
 
             // Create and cache Roboto fonts
             // Thanks https://www.codeproject.com/Articles/42041/How-to-Use-a-Font-Without-Installing-it
@@ -70,6 +70,9 @@
             logicalFonts.Add("Button", createLogicalFont("Roboto Medium", 14, NativeTextRenderer.logFontWeight.FW_MEDIUM));
             logicalFonts.Add("Caption", createLogicalFont("Roboto", 12, NativeTextRenderer.logFontWeight.FW_REGULAR));
             logicalFonts.Add("Overline", createLogicalFont("Roboto", 10, NativeTextRenderer.logFontWeight.FW_REGULAR));
+
+            logicalFonts.Add("TitleForm", createLogicalFont("Roboto Light", 20, NativeTextRenderer.logFontWeight.FW_LIGHT));
+
             // Logical fonts for textbox animation
             logicalFonts.Add("textBox16", createLogicalFont("Roboto", 16, NativeTextRenderer.logFontWeight.FW_REGULAR));
             logicalFonts.Add("textBox15", createLogicalFont("Roboto", 15, NativeTextRenderer.logFontWeight.FW_REGULAR));
@@ -257,6 +260,7 @@
             H4,
             H5,
             H6,
+            TitleForm,
             Subtitle1,
             Subtitle2,
             Body1,
@@ -287,6 +291,9 @@
 
                 case fontType.H6:
                     return new Font(RobotoFontFamilies["Roboto_Medium"], 20f, FontStyle.Bold, GraphicsUnit.Pixel);
+
+                case fontType.TitleForm:
+                    return new Font(RobotoFontFamilies["Roboto"], 24f, FontStyle.Regular, GraphicsUnit.Pixel);
 
                 case fontType.Subtitle1:
                     return new Font(RobotoFontFamilies["Roboto"], 16f, FontStyle.Regular, GraphicsUnit.Pixel);
